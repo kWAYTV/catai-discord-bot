@@ -1,0 +1,7 @@
+discord.py
+loguru
+PyYAML
+aiosqlite
+pyfiglet
+pystyle
+paramiko

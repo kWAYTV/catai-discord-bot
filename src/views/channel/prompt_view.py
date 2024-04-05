@@ -22,23 +22,24 @@ class PromptModal(discord.ui.Modal, title='Send command to host'):
 
         # Typing indicator context manager.
         async with interaction.channel.typing():
-            # Process the prompt.
+            # Using PromptController in its context manager
             async with self.prompt_controller as controller:
                 response = await controller.send_prompt(self.user_prompt.value)
 
-        # Check the response and edit the message accordingly.
+        # Handle the response accordingly.
         if response is None:
             return await message.edit(content='The model failed to respond. Please try again either now or later.')
 
-        session_schema = SessionSchema(owner_id=interaction.user.id, discord_channel_id=interaction.channel.id)
-        await self.sessions.update_session(session_schema)
-
         await message.edit(content=f"""
-            *{self.user_prompt.value}*\n\n
+            *{self.user_prompt.value}*\n
             ```
             {response}
             ```
         """)
+
+        # Update the session with the last used timestamp.
+        session_schema = SessionSchema(owner_id=interaction.user.id, discord_channel_id=interaction.channel.id)
+        await self.sessions.update_session(session_schema)
 
     async def on_error(self, interaction: discord.Interaction, error: Exception) -> None:
         logger.error(f'An error occurred with a prompt modal: {error}')

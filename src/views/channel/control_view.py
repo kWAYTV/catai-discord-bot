@@ -13,11 +13,7 @@ class ControlView(discord.ui.View):
 
     @discord.ui.button(label='💬 Prompt', style=discord.ButtonStyle.green, custom_id='control:prompt')
     async def prompt_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        session = await self.sessions.get_session(interaction.user.id)
-        if session is None:
-            return await interaction.response.send_message(f"You don't have any rooms!", ephemeral=True)
-
-        return await interaction.response.send_modal(PromptModal(messages_ephemeral=session.ephemeral))
+        return await interaction.response.send_modal(PromptModal())
 
     @discord.ui.button(label='👁️ Hidden Messages', style=discord.ButtonStyle.blurple, custom_id='control:ephemeral_room')
     async def ephemeral_room_button(self, interaction: discord.Interaction, button: discord.ui.Button):

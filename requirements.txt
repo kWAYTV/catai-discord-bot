@@ -4,4 +4,3 @@ loguru==0.6.0
 pyfiglet==0.8.post1
 pystyle==2.9
 PyYAML==6.0.1
-PyYAML==6.0.1

@@ -152,5 +152,6 @@ cython_debug/
 #.idea/
 *.sqlite
 
-# Config
+# Bot files
 config.yaml
+ai_bot.log

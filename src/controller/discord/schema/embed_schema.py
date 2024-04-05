@@ -1,5 +1,5 @@
 class EmbedSchema:
-    def __init__(self, title: str, description: str, fields: list = None, color: int = 0xb34760, thumbnail_url: str = None, image_url: str = None, footer_text: str = None, author_url: str = None) -> None:
+    def __init__(self, title: str = None, description: str = None, fields: list = None, color: int = 0xb34760, thumbnail_url: str = None, image_url: str = None, footer_text: str = None, author_url: str = None) -> None:
         self.title = title
         self.description = description
         self.fields = fields

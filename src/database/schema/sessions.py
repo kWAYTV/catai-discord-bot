@@ -10,9 +10,10 @@ class SessionSchema:
         }
 
     @staticmethod
-    def deserialize(data) -> 'SessionSchema':
+    def deserialize(data_tuple):
+        if not data_tuple:
+            return None
         return SessionSchema(
-            owner_id=data['owner_id'],
-            discord_channel_id=data['discord_channel_id'],
-            last_used=data['last_used']
+            owner_id=data_tuple[1],
+            discord_channel_id=data_tuple[2],
         )

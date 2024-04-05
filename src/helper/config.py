@@ -30,14 +30,14 @@ class Config:
         self.log_file = self.config["log_file"]
 
         # Discord bot
-        self.bot_prefix = self.config["bot_prefix"]
+        self.bot_prefix: str = self.config["bot_prefix"]
         self.bot_token: str = self.config["bot_token"]
         self.logs_channel: int = int(self.config["logs_channel"])
         self.chat_category: int = int(self.config["chat_category"])
-        self.dev_guild_id = discord.Object(int(self.config["dev_guild_id"]))
+        self.dev_guild_id: discord.Object = discord.Object(int(self.config["dev_guild_id"]))
 
         # AI
-        self.api_endpoint = self.config["api_endpoint"]
+        self.api_endpoint: str = self.config["api_endpoint"]
 
     # Function to change a value in config.yaml
     def change_value(self, key, value):

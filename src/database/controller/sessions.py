@@ -1,10 +1,12 @@
 import aiosqlite
 from loguru import logger
 from typing import List, Optional
+from src.helper.config import Config
 from src.database.schema.sessions import SessionSchema
 
 class SessionsController:
     def __init__(self):
+        self.config = Config()
         self.db_path = 'src/database/storage/sessions.sqlite'
 
     async def create_table(self) -> None:
@@ -12,9 +14,9 @@ class SessionsController:
             await db.execute('''
                 CREATE TABLE IF NOT EXISTS ssh_sessions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    owner_id TEXT NOT NULL,
-                    discord_channel_id TEXT NOT NULL,
-                    last_used TEXT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    owner_id INTEGER NOT NULL,
+                    discord_channel_id INTEGER NOT NULL,
+                    last_used TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
                 );
             ''')
             await db.commit()
@@ -88,3 +90,12 @@ class SessionsController:
             except Exception as e:
                 logger.error(f"An error occurred while trying to get recent sessions: {e}")
                 return []
+
+    async def delete_expired_sessions(self) -> None:
+        async with aiosqlite.connect(self.db_path) as db:
+            try:
+                await db.execute('DELETE FROM ssh_sessions WHERE last_used < datetime("now", "-30 minutes");')
+                await db.commit()
+            except Exception as e:
+                logger.error(f"An error occurred while trying to delete expired sessions: {e}")
+                await db.rollback()

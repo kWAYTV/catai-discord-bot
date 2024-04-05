@@ -1,4 +1,5 @@
 import discord, uuid
+from src.views.channel.control_view import ControlView
 from src.database.schema.sessions import SessionSchema
 from src.database.controller.sessions import SessionsController
 
@@ -27,7 +28,7 @@ class PanelView(discord.ui.View):
         await self.sessions.create_session(new_session)
 
         # Tag the user in the new channel
-        await channel.send(f"Hey {interaction.user.mention}! Welcome to your room!")
+        await channel.send(f"Hey {interaction.user.mention}! Welcome to your room!", view=ControlView())
 
         return await interaction.response.send_message(f"Your room has been created! You can access it at <#{channel.id}>.", ephemeral=True)
 
@@ -40,7 +41,13 @@ class PanelView(discord.ui.View):
 
         # Delete the private channel
         channel = interaction.guild.get_channel(session.discord_channel_id)
-        await channel.delete()
+        if channel is not None:
+            try:
+                await channel.delete()
+            except discord.errors.NotFound:
+                pass  # Channel is already deleted or not found
+            except Exception as e:
+                return await interaction.response.send_message(f"Failed to delete your room: {e}", ephemeral=True)
 
         # Remove the session from the database
         await self.sessions.delete_session(interaction.user.id)

@@ -1,5 +1,6 @@
 import traceback
 from loguru import logger
+from src.database.controller.sessions import SessionsController
 
 class DatabaseLoader:
     """
@@ -7,15 +8,14 @@ class DatabaseLoader:
     """
 
     def __init__(self) -> None:
-        raise NotImplementedError("No classes instantiated for DatabaseLoader.")
+        self.sessions_controller = SessionsController()
 
     async def setup(self) -> None:
         """
         Sets up the database by creating the necessary table.
         """
         try:
-            # Create database table(s)
-            raise NotImplementedError("No database table setup implemented.")
+            await self.sessions_controller.create_table()
         except Exception as e:
-            logger.critical(f"Error setting up database: {e}")
+            logger.critical(f"Error setting up database(s): {e}")
             traceback.print_exc()

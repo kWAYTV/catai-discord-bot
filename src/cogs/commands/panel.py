@@ -17,6 +17,9 @@ class Panel(commands.Cog):
     async def panel_command(self, interaction: discord.Interaction, channel: discord.TextChannel = None, hidden: bool = False):
         try:
 
+            if channel is None:
+                channel = interaction.channel
+
             embed_schema = EmbedSchema(
                 title="🤖 Welcome!",
                 description=f"From this panel you will be able to manage the bot.",

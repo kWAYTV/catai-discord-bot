@@ -20,7 +20,7 @@ class ControlView(discord.ui.View):
         # Check if the user already has a session
         session = await self.sessions.get_session(interaction.user.id)
         if session is None:
-            return await interaction.response.send_message(f"You don't have a session!", ephemeral=True)
+            return await interaction.response.send_message(f"You don't have any room!", ephemeral=True)
 
         # Delete the private channel
         try:
@@ -28,4 +28,4 @@ class ControlView(discord.ui.View):
             await channel.delete()
         except Exception as e:
             logger.error(f"An error occurred while trying to delete the channel: {e}")
-            return await interaction.response.send_message(f"An error occurred while trying to delete the session: {e}", ephemeral=True)
+            return await interaction.response.send_message(f"An error occurred while trying to delete the room: {e}", ephemeral=True)

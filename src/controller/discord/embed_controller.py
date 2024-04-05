@@ -25,13 +25,14 @@ class EmbedController:
             )
 
             # Add fields to embed
-            for field in schema.get("fields", []):
-                if field.get("value") is not None:
-                    embed.add_field(
-                        name=field["name"],
-                        value=field["value"],
-                        inline=field.get("inline", False)
-                    )
+            if schema.get("fields") is not None:
+                for field in schema.get("fields", []):
+                    if field.get("value") is not None:
+                        embed.add_field(
+                            name=field["name"],
+                            value=field["value"],
+                            inline=field.get("inline", False)
+                        )
 
             # Set default properties
             self.set_defaults(embed, schema)

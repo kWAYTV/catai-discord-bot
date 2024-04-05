@@ -15,7 +15,7 @@ class PanelView(discord.ui.View):
         # Check if the user already has a session
         session = await self.sessions.get_session(interaction.user.id)
         if session is not None:
-            return await interaction.response.send_message(f"You already have a session! You can access it at <#{session.discord_channel_id}>.", ephemeral=True)
+            return await interaction.response.send_message(f"You already have a room! You can access it at <#{session.discord_channel_id}>.", ephemeral=True)
 
         # Create a new private channel
         channel = await interaction.guild.create_text_channel(f"room-{uuid.uuid4()}", category=interaction.channel.category)
@@ -26,14 +26,17 @@ class PanelView(discord.ui.View):
         new_session = SessionSchema(owner_id=interaction.user.id, discord_channel_id=channel.id)
         await self.sessions.create_session(new_session)
 
-        return await interaction.response.send_message(f"Your session has been created! You can access it at <#{channel.id}>.", ephemeral=True)
+        # Tag the user in the new channel
+        await channel.send(f"Hey {interaction.user.mention}! Welcome to your room!")
+
+        return await interaction.response.send_message(f"Your room has been created! You can access it at <#{channel.id}>.", ephemeral=True)
 
     @discord.ui.button(label='🗑️ Delete Rooms', style=discord.ButtonStyle.red, custom_id='panel:delete_room')
     async def delete_room_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         # Check if the user has a session
         session = await self.sessions.get_session(interaction.user.id)
         if session is None:
-            return await interaction.response.send_message("You don't have any sessions!", ephemeral=True)
+            return await interaction.response.send_message("You don't have any rooms!", ephemeral=True)
 
         # Delete the private channel
         channel = interaction.guild.get_channel(session.discord_channel_id)
@@ -42,4 +45,4 @@ class PanelView(discord.ui.View):
         # Remove the session from the database
         await self.sessions.delete_session(interaction.user.id)
 
-        return await interaction.response.send_message("Your sessions have been deleted!", ephemeral=True)
+        return await interaction.response.send_message("Your rooms have been deleted!", ephemeral=True)

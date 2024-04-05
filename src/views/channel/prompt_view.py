@@ -33,7 +33,12 @@ class PromptModal(discord.ui.Modal, title='Send command to host'):
         session_schema = SessionSchema(owner_id=interaction.user.id, discord_channel_id=interaction.channel.id)
         await self.sessions.update_session(session_schema)
 
-        await message.edit(content=f'```{response}```')
+        await message.edit(content=f"""
+            *{self.user_prompt.value}*\n\n
+            ```
+            {response}
+            ```
+        """)
 
     async def on_error(self, interaction: discord.Interaction, error: Exception) -> None:
         logger.error(f'An error occurred with a prompt modal: {error}')

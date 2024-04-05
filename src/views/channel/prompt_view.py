@@ -6,16 +6,17 @@ from src.database.controller.sessions import SessionsController
 from src.controller.ai.prompt_controller import PromptController
 
 class PromptModal(discord.ui.Modal, title='Send command to host'):
-    def __init__(self):
+    def __init__(self, messages_ephemeral: bool = True):
         self.config = Config()
         self.sessions = SessionsController()
+        self.messages_ephemeral = messages_ephemeral
         self.prompt_controller = PromptController.get_instance()
         super().__init__()
 
     user_prompt = discord.ui.TextInput(label='Prompt', style=discord.TextStyle.long, placeholder='Enter the prompt you want to give to the model.')
 
     async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.defer(ephemeral=self.messages_ephemeral)
 
         # Send the initial response message.
         message = await interaction.followup.send('Please wait for an answer from the model...', ephemeral=True)

@@ -50,7 +50,7 @@ class SessionsController:
                     UPDATE ssh_sessions
                     SET discord_channel_id = ?, last_used = CURRENT_TIMESTAMP, ephemeral = ?
                     WHERE owner_id = ?;
-                ''', (session.discord_channel_id, session.owner_id))
+                ''', (session.discord_channel_id, session.owner_id, session.ephemeral))
                 await db.commit()
             except Exception as e:
                 logger.error(f"An error occurred while trying to update session: {e}")

@@ -4,8 +4,6 @@ from src.helper.config import Config
 from src.database.schema.sessions import SessionSchema
 from src.database.controller.sessions import SessionsController
 from src.controller.ai.prompt_controller import PromptController
-from src.controller.discord.schema.embed_schema import EmbedSchema
-from src.controller.discord.embed_controller import EmbedController
 
 class PromptModal(discord.ui.Modal, title='Send command to host'):
     def __init__(self):
@@ -28,41 +26,14 @@ class PromptModal(discord.ui.Modal, title='Send command to host'):
             async with self.prompt_controller as controller:
                 response = await controller.send_prompt(self.user_prompt.value)
 
-        embed_schema = EmbedSchema(
-            title="AI Response",
-            description="Answers should be double-checked for accuracy.",
-            color=0xb34760,
-        )
-
         # Check the response and edit the message accordingly.
         if response is None:
-            embed_schema.fields = [
-                {
-                    'name': 'Error',
-                    'value': 'An error occurred while processing the prompt. Please try again.',
-                    'inline': True,
-                }
-            ]
-            return await message.edit(embed=embed)
-
-        embed_schema.fields = [
-            {
-                'name': 'Prompt',
-                'value': self.user_prompt.value,
-                'inline': True,
-            },
-            {
-                'name': 'Response',
-                'value': response,
-                'inline': False,
-            }
-        ]
+            return await message.edit(content='The model failed to respond. Please try again either now or later.')
 
         session_schema = SessionSchema(owner_id=interaction.user.id, discord_channel_id=interaction.channel.id)
         await self.sessions.update_session(session_schema)
 
-        embed = await EmbedController().build_embed(embed_schema)
-        await message.edit(embed=embed)
+        await message.edit(content=f'```{response}```')
 
     async def on_error(self, interaction: discord.Interaction, error: Exception) -> None:
         logger.error(f'An error occurred with a prompt modal: {error}')

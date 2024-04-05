@@ -53,7 +53,7 @@ chat_category: # String, Category ID for the chat channels to be created
 dev_guild_id: # String, Guild ID for the development guild
 
 # [AI]
-api_endpoint: # String, URL to the CatAI selfhosted API
+api_endpoint: # String, URL to the CatAI selfhosted API (Example: http://127.0.0.1:3000/api/chat/prompt)
 ```
 
 ## License

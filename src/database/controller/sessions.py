@@ -16,7 +16,8 @@ class SessionsController:
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     owner_id INTEGER NOT NULL,
                     discord_channel_id INTEGER NOT NULL,
-                    last_used TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                    last_used TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    ephemeral BOOLEAN NOT NULL DEFAULT FALSE
                 );
             ''')
             await db.commit()
@@ -25,8 +26,8 @@ class SessionsController:
         async with aiosqlite.connect(self.db_path) as db:
             try:
                 await db.execute('''
-                    INSERT INTO ssh_sessions (owner_id, discord_channel_id, last_used)
-                    VALUES (?, ?, CURRENT_TIMESTAMP);
+                    INSERT INTO ssh_sessions (owner_id, discord_channel_id, last_used, ephemeral)
+                    VALUES (?, ?, CURRENT_TIMESTAMP, FALSE);
                 ''', (session.owner_id, session.discord_channel_id))
                 await db.commit()
             except Exception as e:
@@ -47,7 +48,7 @@ class SessionsController:
             try:
                 await db.execute('''
                     UPDATE ssh_sessions
-                    SET discord_channel_id = ?, last_used = CURRENT_TIMESTAMP
+                    SET discord_channel_id = ?, last_used = CURRENT_TIMESTAMP, ephemeral = ?
                     WHERE owner_id = ?;
                 ''', (session.discord_channel_id, session.owner_id))
                 await db.commit()

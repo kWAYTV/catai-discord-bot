@@ -21,7 +21,7 @@ class PromptController:
             'Content-Type': 'application/json',
         }
 
-    async def get_prompt(self, prompt: str) -> str:
+    async def send_prompt(self, prompt: str) -> str:
         body, request_uuid = {"prompt": prompt}, uuid.uuid4()
         try:
             response = await self.client.post(self.config.api_endpoint, headers=self.headers, json=body)
